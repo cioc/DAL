@@ -73,17 +73,17 @@ class TinyImage:
     return o
 
   def _keywordFromMeta(self, index):
-    offset = indx * 768
+    offset = index * 768
     self.meta.seek(offset)
-    data = meta_file.read(768)
+    data = self.meta.read(768)
     return data[0:80].strip()
 
   def _logSearch(self, term):
     low = 0
-    high = img_count
+    high = self.img_count
     for i in range(0, 9):
       curr_word = self._keywordFromMeta(int((low + high) / 2))
-      cmp = strcmp(curr_word.lower(), term.lower())
+      cmp = _strcmp(curr_word.lower(), term.lower())
       if (cmp == 0):
         return (low, high)
       if (cmp == 1):
@@ -91,3 +91,6 @@ class TinyImage:
       if (cmp == -1):
         low = ((low + high) / 2)
     return (low, high)
+
+t = TinyImage()
+print t.search('cat', 2000)
