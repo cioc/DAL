@@ -34,7 +34,7 @@ class TinyImage:
       return numpy.fromstring(data, dtype='uint8')    
     elif isinstance(ids, tuple):
       (start, end) = ids
-      offset = ids * 3072
+      offset = start * 3072
       self.data.seek(offset)
       data = self.data.read((end - start) * 3072)
       pos = 0
@@ -91,6 +91,3 @@ class TinyImage:
       if (cmp == -1):
         low = ((low + high) / 2)
     return (low, high)
-
-t = TinyImage()
-print t.search('cat', 2000)
