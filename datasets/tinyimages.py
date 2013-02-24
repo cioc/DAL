@@ -54,6 +54,19 @@ class TinyImage:
         o.append(numpy.fromstring(data, dtype='uint8'))  
       return o
 
+  #TODO - Test this more
+  def display(self, items):
+    import cStringIO as StringIO
+    import base64
+    from IPython.core.display import HTML
+    for i in items:
+      t = i.reshape(32,32,3, order="F").copy()
+      img = scipy.misc.toimage(t) 
+      output = StringIO.StringIO()
+      img.save(output, format="PNG")
+      output_html += '<img src="data:image/png;base64,%s"/>' % base64.b64encode(output.getvalue())
+    return HTML(output_html) 
+    
   def search(self, keyword, limit):
     (l, h) = self._logSearch(keyword)
     found = False
