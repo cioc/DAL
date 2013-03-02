@@ -42,7 +42,7 @@ class TinyImage:
       o = []
       while pos < dlen:
         stop = pos + 3072
-        o.append(numpy.fromstring(data[pos:3072], dtype='uint8'))
+        o.append(numpy.fromstring(data[pos:(pos +3072)], dtype='uint8'))
         pos += 3072
       return o
     else:
@@ -59,6 +59,7 @@ class TinyImage:
     import cStringIO as StringIO
     import base64
     from IPython.core.display import HTML
+    output_html = ""
     for i in items:
       t = i.reshape(32,32,3, order="F").copy()
       img = scipy.misc.toimage(t) 
