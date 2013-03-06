@@ -36,9 +36,13 @@ class Cache:
   def incache(self, objname):
     return os.path.isfile(self.path+'/'+objname) 
     
-  def directhandle(self, objname):
-    return open(self.path+'/'+objname)
-     
+  def directhandle(self, bucketname, objname):
+    if self.incache(objname):
+      return open(self.path+'/'+objname)
+    else:
+      self.s3tocache(bucketname, objname)
+      return open(self.path+'/'+objname) 
+
   def store(self, groupname, id, obj):
     if isinstance(id, int):
       path = '%s/%s-%d.obj' % (self.path, groupname, id)

@@ -16,28 +16,29 @@ class Wishes:
     return o
 
   def iter(self, subset):
-    if self.cache.incache(subset):
-      h = self.cache.directhandle(subset)
-    else:
-      self.cache.s3tocache(self.bucketname, subset)
-      h = self.cache.directhandle(subset)
+    h = self.cache.directhandle(self.bucketname, subset)
     for l in iter(h):
       yield json.loads(l)
 
   def filter(self, subset, f):
-    if self.cache.incache(subset):
-      h = self.cache.directhandle(subset)
-    else:
-      self.cache.s3tocache(self.bucketname, subset)
-      h = self.cache.directhandle(subset)
+    h = self.cache.directhandle(self.bucketname, subset)
     for l in iter(h):
       j = json.loads(l)
       if f(j):
         yield j
 
+  def byid(self, index):
+    (subset, i) = index
+    h = self.cache.directhandle(self.bucketname, subset)
+    c = 0
+    for l in iter(h):
+      if c == i:
+        return json.loads(l)
+      else:
+        c += 1
+    return None 
 
-  def byid(self):
-    pass
-
-  def display(self):
-    pass
+  def display(self, items):
+    for i in items:
+      print i
+      

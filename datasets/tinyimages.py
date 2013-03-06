@@ -105,3 +105,6 @@ class TinyImage:
       if (cmp == -1):
         low = ((low + high) / 2)
     return (low, high)
+
+  def subsets(self):
+    return None
