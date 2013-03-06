@@ -1,5 +1,8 @@
 import config
 import pickle 
+import os.path
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
 
 #TODO - size handling
 def parseSize(s):
@@ -9,10 +12,32 @@ class Cache:
   def __init__(self):
     self.config = config.config()
     self.path = self.config['cache']['path']
+    self.aws_access_key = self.config['cache']['AWS_ACCESS_KEY']
+    self.aws_secret_key = self.config['cache']['AWS_SECRET_KEY']
     self.size = parseSize(self.config['cache']['size'])
     self.entries = {}
     self.entrylog = open(self.path+'/cache.log', "a") 
     self._loadlog()
+
+  def s3listcontents(self, bucketname):
+    conn = S3Connection(self.aws_access_key, self.aws_secret_key)
+    b = conn.get_bucket(bucketname)
+    o = b.list()
+    conn.close()
+    return o
+  
+  def s3tocache(self, bucketname, objname):
+    conn = S3Connection(self.aws_access_key, self.aws_secret_key)
+    b = conn.get_bucket(bucketname)
+    k = Key(b)
+    k.key = objname
+    k.get_contents_to_filename(self.path+'/'+objname) 
+  
+  def incache(self, objname):
+    return os.path.isfile(self.path+'/'+objname) 
+    
+  def directhandle(self, objname):
+    return open(self.path+'/'+objname)
      
   def store(self, groupname, id, obj):
     if isinstance(id, int):
@@ -90,12 +115,3 @@ class Cache:
             return d[tstart:(tend + 1)] 
     else:
       return None
-    
-c = Cache()
-#x = [1,2,3,4,5,6,7]
-#z = [11,12,13,14,15]
-#c.store('testgroup', (0, 6), x)
-#c.store('othergroup', 0, z)
-#y = c.load('othergroup', 0)
-#print y
- 
