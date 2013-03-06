@@ -70,13 +70,13 @@ The index of a wish is a pair: (subsetname, numeric_id).  Byid takes in a pair: 
 Using the identifiers from a call to subsets, you can call iter on a subset of the wishes.  Iter returns an iterator that allows you to iterate over the entire subset.
 
 ```python
-def iter(self, subset)
+def iter(subset)
 ```
 
 Filter is just like iter except it also takes in a function, f, that used to filter the items returned by the iterator.  Only items that return true when passed into f will be returned.
 
 ```python
-def filter(self, subset, f)
+def filter(subset, f)
 ```
 
 
