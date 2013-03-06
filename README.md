@@ -30,31 +30,53 @@ def create(name)
 Currently supported datasets:
 
 * Tiny Images ('tinyimages')
-* Cache (to be determined)
+* Wishes ('wishes')
 
 Uniform Api
 ===========
 
-Each dataset must have two methods: byid and display.
+Each dataset must have three methods: byid and display.
 
 ```python
 def byid (index OR (start, end) OR [indices])
 
 def display(array)
+
+def subsets()
 ```
 
-byid takes in an index (integer) a (start, end) pair or an array of indices and returns the associated data items.
+byid takes in an index and returns the associated data items.  Each dataset defines how it is indexed. 
 
 display takes in an array of dataitems and displays them in an ipython notebook.
 
+subsets returns a listing of the names of the subsets of a dataset or None when a dataset has known names subsets.
+
 Tiny Images - Dataset Specific API (DSA)
 ========================================
+
+Tiny images are indexed by numeric ids.  byid takes in an index (integer), a (start, end) pair, or an array of indices.
+
+Tiny images features a search command that takes in a keyword and limit and will return up to limit image indices associated with the keyword.
 
 ```python
 def search(keyword, limit)
 ```
 
-Tiny images features a search command that takes in a keyword and limit and will return up to limit image indices associated with the keyword.
+Wishes - DSA
+============
 
+The index of a wish is a pair: (subsetname, numeric_id).  Byid takes in a pair: (subsetname, numeric_id).  
+
+Using the identifiers from a call to subsets, you can call iter on a subset of the wishes.  Iter returns an iterator that allows you to iterate over the entire subset.
+
+```python
+def iter(subset)
+```
+
+Filter is just like iter except it also takes in a function, f, that used to filter the items returned by the iterator.  Only items that return true when passed into f will be returned.
+
+```python
+def filter(subset, f)
+```
 
 
