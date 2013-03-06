@@ -31,25 +31,30 @@ Currently supported datasets:
 
 * Tiny Images ('tinyimages')
 * Wishes ('wishes')
-* Cache (to be determined)
 
 Uniform Api
 ===========
 
-Each dataset must have two methods: byid and display.
+Each dataset must have three methods: byid and display.
 
 ```python
 def byid (index OR (start, end) OR [indices])
 
 def display(array)
+
+def subsets()
 ```
 
-byid takes in an index (integer) a (start, end) pair or an array of indices and returns the associated data items.
+byid takes in an index and returns the associated data items.  Each dataset defines how it is indexed. 
 
 display takes in an array of dataitems and displays them in an ipython notebook.
 
+subsets returns a listing of the names of the subsets of a dataset or None when a dataset has known names subsets.
+
 Tiny Images - Dataset Specific API (DSA)
 ========================================
+
+Tiny images are indexed by numeric ids.  byid takes in an index (integer), a (start, end) pair, or an array of indices.
 
 Tiny images features a search command that takes in a keyword and limit and will return up to limit image indices associated with the keyword.
 
@@ -59,6 +64,8 @@ def search(keyword, limit)
 
 Wishes - DSA
 ============
+
+The index of a wish is a pair: (subsetname, numeric_id).  Byid takes in a pair: (subsetname, numeric_id).  
 
 Returns a listing of the subsets of wishes.  Each represents a day's or a subset of a day's wishes.
 
