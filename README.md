@@ -67,12 +67,6 @@ Wishes - DSA
 
 The index of a wish is a pair: (subsetname, numeric_id).  Byid takes in a pair: (subsetname, numeric_id).  
 
-Returns a listing of the subsets of wishes.  Each represents a day's or a subset of a day's wishes.
-
-```python
-def subsets(self)
-```
-
 Using the identifiers from a call to subsets, you can call iter on a subset of the wishes.  Iter returns an iterator that allows you to iterate over the entire subset.
 
 ```python
