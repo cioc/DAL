@@ -30,6 +30,7 @@ def create(name)
 Currently supported datasets:
 
 * Tiny Images ('tinyimages')
+* Wishes ('wishes')
 * Cache (to be determined)
 
 Uniform Api
@@ -50,11 +51,31 @@ display takes in an array of dataitems and displays them in an ipython notebook.
 Tiny Images - Dataset Specific API (DSA)
 ========================================
 
+Tiny images features a search command that takes in a keyword and limit and will return up to limit image indices associated with the keyword.
+
 ```python
 def search(keyword, limit)
 ```
 
-Tiny images features a search command that takes in a keyword and limit and will return up to limit image indices associated with the keyword.
+Wishes - DSA
+============
 
+Returns a listing of the subsets of wishes.  Each represents a day's or a subset of a day's wishes.
+
+```python
+def subsets(self)
+```
+
+Using the identifiers from a call to subsets, you can call iter on a subset of the wishes.  Iter returns an iterator that allows you to iterate over the entire subset.
+
+```python
+def iter(self, subset)
+```
+
+Filter is just like iter except it also takes in a function, f, that used to filter the items returned by the iterator.  Only items that return true when passed into f will be returned.
+
+```python
+def filter(self, subset, f)
+```
 
 
