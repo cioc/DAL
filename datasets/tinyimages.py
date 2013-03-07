@@ -1,7 +1,7 @@
 import numpy
 import scipy
 import Image
-
+from blockstore import BlockStore
 import config
 
 #TODO - try to remove
@@ -21,40 +21,26 @@ def _strcmp(str1, str2):
 class TinyImage:
   def __init__(self):
     self.config = config.config()  
-    self.meta = open(self.config['tinyimages']['metapath'], 'rb')
-    self.data = open(self.config['tinyimages']['datapath'], 'rb')
+    self.meta = BlockStore(self.config['tinyimages']['metapath'], 768)
+    self.data = BlockStore(self.config['tinyimages']['datapath'], 3072) 
     self.img_count = 79302017
  
   #public functions
   def byid(self, ids):
     if isinstance(ids, int):
-      offset = ids * 3072
-      self.data.seek(offset)
-      data = self.data.read(3072)
-      return numpy.fromstring(data, dtype='uint8')    
+      for s in self.data.slice(ids, ids): 
+        return numpy.fromstring(s, dtype='uint8')    
     elif isinstance(ids, tuple):
-      (start, end) = ids
-      offset = start * 3072
-      self.data.seek(offset)
-      data = self.data.read((end - start) * 3072)
-      pos = 0
-      dlen = len(data)
       o = []
-      while pos < dlen:
-        stop = pos + 3072
-        o.append(numpy.fromstring(data[pos:(pos +3072)], dtype='uint8'))
-        pos += 3072
-      return o
+      for s in self.data.slice(ids[0], ids[1]):
+        o.append(numpy.fromstring(s, dtype='uint8'))
+      return o 
     else:
       o = []
       for i in ids:
-        offset = i * 3072
-        self.data.seek(offset)
-        data = self.data.read(3072)
-        o.append(numpy.fromstring(data, dtype='uint8'))  
+        o.append(numpy.fromstring(self.data.slice(i, i), dtype='uint8'))  
       return o
 
-  #TODO - Test this more
   def display(self, items):
     import cStringIO as StringIO
     import base64
@@ -87,10 +73,8 @@ class TinyImage:
     return o
 
   def _keywordFromMeta(self, index):
-    offset = index * 768
-    self.meta.seek(offset)
-    data = self.meta.read(768)
-    return data[0:80].strip()
+    for s in self.meta.slice(index, index):
+      return s[0:80].strip()
 
   def _logSearch(self, term):
     low = 0
