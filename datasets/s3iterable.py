@@ -1,12 +1,15 @@
 import config
-import json
 from cache import Cache
 
 class S3Iterable(object):
   def __init__(self):
     '''
-    Subclasses must handle setting up config including bucketname
+    Subclasses must handle setting up config including:
+    * bucketname
+    * parser
     '''
+    self.bucketname = None
+    self.parser = None
     self.cache = Cache()
 
   def subsets(self):
@@ -19,12 +22,18 @@ class S3Iterable(object):
   def iter(self, subset):
     h = self.cache.directhandle(self.bucketname, subset)
     for l in iter(h):
-      yield json.loads(l)
+      if self.parser is None:
+        yield l
+      else:
+        yield self.parser(l)
 
   def filter(self, subset, f):
     h = self.cache.directhandle(self.bucketname, subset)
     for l in iter(h):
-      j = json.loads(l)
+      if self.parser is None:
+        j = l
+      else:
+        j = self.parser(l)
       if f(j):
         yield j
 
@@ -34,7 +43,10 @@ class S3Iterable(object):
     c = 0
     for l in iter(h):
       if c == i:
-        return json.loads(l)
+        if self.parser is None:
+          return l
+        else:
+          return self.parser(l)
       else:
         c += 1
     return None 

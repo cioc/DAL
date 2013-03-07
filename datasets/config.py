@@ -9,12 +9,15 @@ _config = {'tinyimages': {
             'cache': {
               'path': '/mnt',
               'size': '10G',
-              'AWS_ACCESS_KEY': 'KEY_HERE',
-              'AWS_SECRET_KEY': 'KEy_HERE'
+              'AWS_ACCESS_KEY': '...KEY...HERE...',
+              'AWS_SECRET_KEY': '...KEY...HERE...'
             },
             'wishes': {
               'bucket': 'ml-wishes'
             },
+            'sou': {
+              'bucket': 'ml-sou'
+            }
           }
 
 def config():
