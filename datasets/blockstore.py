@@ -11,4 +11,9 @@ class BlockStore(object):
       yield f.read(self.blocksize) 
       curr += 1 
     f.close()
-      
+  def byid(self, id):
+    f = open(self.path, 'rb')
+    f.seek(id *self.blocksize)
+    o = f.read(self.blocksize)
+    f.close()
+    return o

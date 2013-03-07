@@ -28,8 +28,7 @@ class TinyImage:
   #public functions
   def byid(self, ids):
     if isinstance(ids, int):
-      for s in self.data.slice(ids, ids): 
-        return numpy.fromstring(s, dtype='uint8')    
+      return numpy.fromstring(self.data.byid(ids), dtype='uint8')    
     elif isinstance(ids, tuple):
       o = []
       for s in self.data.slice(ids[0], ids[1]):
@@ -38,7 +37,7 @@ class TinyImage:
     else:
       o = []
       for i in ids:
-        o.append(numpy.fromstring(self.data.slice(i, i), dtype='uint8'))  
+        o.append(numpy.fromstring(self.data.byid(i), dtype='uint8'))  
       return o
 
   def display(self, items):
