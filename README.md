@@ -18,6 +18,8 @@ x = tinyimages.byid((0, 100))
 tinyimages.display(x)
 ```
 
+See examples/test.py to see a sample usage of each of the available datasets.
+
 Data set handles
 ================
 
