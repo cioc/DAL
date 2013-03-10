@@ -22,10 +22,7 @@ class S3Iterable(object):
     return o
 
   def iter(self, subset):
-    if self.decompress is not None:
-      h = self.cache.directhandle(self.bucketname, subset, decompress=self.decompress)
-    else:
-      h = self.cache.directhandle(self.bucketname, subset)
+    h = self.cache.directhandle(self.bucketname, subset, decompress=self.decompress)
     for l in self.iterator(h):
       if self.parser is None:
         yield l
@@ -33,7 +30,7 @@ class S3Iterable(object):
         yield self.parser(l)
 
   def filter(self, subset, f):
-    h = self.cache.directhandle(self.bucketname, subset)
+    h = self.cache.directhandle(self.bucketname, subset, decompress=self.decompress)
     for l in self.iterator(h):
       if self.parser is None:
         j = l
@@ -44,7 +41,7 @@ class S3Iterable(object):
 
   def byid(self, index):
     (subset, i) = index
-    h = self.cache.directhandle(self.bucketname, subset)
+    h = self.cache.directhandle(self.bucketname, subset, decompress=self.decompress)
     c = 0
     for l in self.iterator(h):
       if c == i:
