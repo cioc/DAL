@@ -31,6 +31,8 @@ Currently supported datasets:
 
 * Tiny Images ('tinyimages')
 * Wishes ('wishes')
+* State of the Union ('sou')
+* Google Ngrams Version 1. ('ngrams')
 
 Uniform Api
 ===========
@@ -38,7 +40,7 @@ Uniform Api
 Each dataset must have three methods: byid and display.
 
 ```python
-def byid (index OR (start, end) OR [indices])
+def byid (index)
 
 def display(array)
 
@@ -78,5 +80,15 @@ Filter is just like iter except it also takes in a function, f, that used to fil
 ```python
 def filter(subset, f)
 ```
+
+State of Union - DSA
+====================
+
+Identical to Wishes.
+
+Google Ngrams
+=============
+
+Identical to Wishes.
 
 
