@@ -1,3 +1,12 @@
+'''
+import DAL
+ngrams = DAL.create('ngrams')
+print ngrams.subsets()
+
+for gram in ngrams.iter('googlebooks-eng-1M-1gram-20090715-0.csv.zip'):
+  print gram
+'''
+'''
 import DAL
 sou = DAL.create('sou')
 
@@ -6,8 +15,9 @@ speaches = sou.subsets()
 for l in sou.iter(speaches[0]):
   if len(l) > 0:
     print l
-
 '''
+'''
+import DAL
 wishes = DAL.create('wishes')
 
 print wishes.subsets()
@@ -30,7 +40,7 @@ o.append(wishes.byid(('wish-2012-12-01.json', 1)))
 
 wishes.display(o)
 '''
-'''
+
 from DAL import create
 #create a handle to the tinyimages dataset
 tinyimages = create('tinyimages')
@@ -44,4 +54,3 @@ print x
 
 #display those images
 #tinyimages.display(x)
-'''

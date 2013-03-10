@@ -9,11 +9,14 @@ _config = {'tinyimages': {
             'cache': {
               'path': '/mnt',
               'size': '10G',
-              'AWS_ACCESS_KEY': '...KEY...HERE...',
-              'AWS_SECRET_KEY': '...KEY...HERE...'
+              'AWS_ACCESS_KEY': 'AKIAI2EP4WVCJ2ZIWUEQ',
+              'AWS_SECRET_KEY': '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'
             },
             'wishes': {
               'bucket': 'ml-wishes'
+            },
+            'ngrams': {
+              'bucket': 'ml-ngrams'
             },
             'sou': {
               'bucket': 'ml-sou'

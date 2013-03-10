@@ -11,6 +11,8 @@ class S3Iterable(object):
     self.bucketname = None
     self.parser = None
     self.cache = Cache()
+    self.iterator = iter
+    self.decompress = None
 
   def subsets(self):
     l = self.cache.s3listcontents(self.bucketname)
@@ -20,8 +22,11 @@ class S3Iterable(object):
     return o
 
   def iter(self, subset):
-    h = self.cache.directhandle(self.bucketname, subset)
-    for l in iter(h):
+    if self.decompress is not None:
+      h = self.cache.directhandle(self.bucketname, subset, decompress=self.decompress)
+    else:
+      h = self.cache.directhandle(self.bucketname, subset)
+    for l in self.iterator(h):
       if self.parser is None:
         yield l
       else:
@@ -29,7 +34,7 @@ class S3Iterable(object):
 
   def filter(self, subset, f):
     h = self.cache.directhandle(self.bucketname, subset)
-    for l in iter(h):
+    for l in self.iterator(h):
       if self.parser is None:
         j = l
       else:
@@ -41,7 +46,7 @@ class S3Iterable(object):
     (subset, i) = index
     h = self.cache.directhandle(self.bucketname, subset)
     c = 0
-    for l in iter(h):
+    for l in self.iterator(h):
       if c == i:
         if self.parser is None:
           return l
