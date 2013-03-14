@@ -104,7 +104,7 @@ I built this for saving the output of long running python scripts for later use.
 Look how simple:
 
 ```python
-from Checkpoint import Checkpoint
+from DAL.datasets.checkpoint import Checkpoint
 
 ch = Checkpoint(bucket='bucketnamehere')
 
