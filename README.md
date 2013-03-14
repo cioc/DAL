@@ -106,7 +106,7 @@ Look how simple:
 ```python
 from DAL.datasets.checkpoint import Checkpoint
 
-ch = Checkpoint(bucket='bucketnamehere')
+ch = Checkpoint()
 
 x = [1,2,3,4,5,6, 7]
 
