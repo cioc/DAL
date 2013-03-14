@@ -12,6 +12,9 @@ _config = {'tinyimages': {
               'AWS_ACCESS_KEY': 'AKIAI2EP4WVCJ2ZIWUEQ',
               'AWS_SECRET_KEY': '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'
             },
+            'checkpoint': {
+              'bucket': 'ml-charles' 
+            },
             'wishes': {
               'bucket': 'ml-wishes'
             },
