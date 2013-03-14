@@ -9,7 +9,7 @@ import pickle
 import config
 
 class Checkpoint:
-  def __init__(self, bucket=None, access_key=None,secret_key=None):
+  def __init__(self):
     self.config = config.config()
     self.bucket = self.config['checkpoint']['bucket']
     self.access_key = self.config['cache']['AWS_ACCESS_KEY']
