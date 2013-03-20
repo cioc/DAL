@@ -9,14 +9,30 @@ class MapReduce:
     self.hardware = {'1node': 1, '5node': 2}
   
   def runjob(self, hardware, jobfile):
-    data = urllib.urlencode([('aws_access_key', self.aws_access_key),('aws_secret_key', self.aws_secret_key),('job_script', jobfile),('hardware', self.hardware[hardware])])   
-    req = urllib2.urlopen('http://lsda.cs.uchicago.edu/hadoop', data)
-    o = json.loads(req.read())
-    return o['output']
+    try:
+      data = urllib.urlencode([('aws_access_key', self.aws_access_key),('aws_secret_key', self.aws_secret_key),('job_script', jobfile),('hardware', self.hardware[hardware])])   
+      req = urllib2.urlopen('http://lsda.cs.uchicago.edu/hadoop', data)
+      o = json.loads(req.read())
+      return o['output']
+    except urllib2.HTTPError as e:
+      return ('err', e.fp.read())
 
-  def jobstatus(self, jobflowid):
-    pass
+  def jobs(self):
+    try:
+      data = urllib.urlencode([('aws_access_key', self.aws_access_key),('aws_secret_key', self.aws_secret_key)])
+      req = urllib2.urlopen('http://lsda.cs.uchicago.edu/hadoop?'+data)
+      o = json.loads(req.read())
+      return o['result']
+    except urllib2.HTTPError as e:
+      return ('err', e.fp.read())
 
-  def myjobs(self):
-    pass
+  def status(self, jobflowid):
+    try:
+      data = urllib.urlencode([('aws_access_key', self.aws_access_key),('aws_secret_key', self.aws_secret_key)])
+      req = urllib2.urlopen('http://lsda.cs.uchicago.edu/hadoop/'+jobflowid+'?'+data)
+      o = json.loads(req.read())
+      return o['status']
+    except urllib2.HTTPError as e:
+      return ('err', e.fp.read())
+
 
