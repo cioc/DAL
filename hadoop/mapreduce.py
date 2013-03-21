@@ -1,11 +1,13 @@
 import urllib2
 import urllib
 import json
+import config
 
 class MapReduce:
   def __init__(self):
-    self.aws_access_key='ACCESS_KEY' 
-    self.aws_secret_key='SECRET_KEY'
+    self.config = config.config()
+    self.aws_access_key=self.config['cache']['AWS_ACCESS_KEY'] 
+    self.aws_secret_key=self.config['cache']['AWS_SECRET_KEY']
     self.hardware = {'1node': 1, '5node': 2}
   
   def runjob(self, hardware, jobfile):
