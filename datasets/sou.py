@@ -8,8 +8,8 @@ class Sou(S3Iterable):
     self.config = config.config()
     self.bucketname = self.config['sou']['bucket']
   
-  def metadata(self, subset):
-    dh = self.cache.directhandle(self.bucketname, subset)
+  def metadata(self):
+    dh = self.cache.directhandle(self.bucketname, 'soumeta.txt')
     o = []
     for l in dh:
       p = l.split('|')
