@@ -8,6 +8,7 @@ import time
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import zipfile
+from collections import defaultdict
 
 #TODO - size handling
 def parseSize(s):
@@ -66,6 +67,23 @@ class Cache:
     else:
       raise Exception("No Such Decompressor")
     return decompath
+  
+  def cleancache(self):
+    if os.path.exists(self.path+'/cache.log'): 
+      state = defaultdict(lambda: [])
+      with open(self.path+'/cache.log', 'r') as f:
+        for l in f:
+          pieces = l.split()
+          if len(l) > 0 and len(pieces) == 3:
+            pieces = l.split()
+            k = pieces[0] + '|' +pieces[1]
+            state[k].append(pieces[2])
+      with open(self.path+'/cache.log', 'w') as f:
+        for k, v in state.iteritems():
+          if 'downloading...' in v and 'COMPLETE' in v:
+            pieces = k.split('|')
+            f.write(pieces[0] + ' ' + pieces[1] + ' ' + 'downloading...\n')
+            f.write(pieces[0] + ' ' + pieces[1] + ' ' + 'COMPLETE\n')
     
   def directhandle(self, bucketname, objname, decompress=None):
     if decompress is None:
