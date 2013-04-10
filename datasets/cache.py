@@ -85,16 +85,22 @@ class Cache:
             f.write(pieces[0] + ' ' + pieces[1] + ' ' + 'downloading...\n')
             f.write(pieces[0] + ' ' + pieces[1] + ' ' + 'COMPLETE\n')
     
-  def directhandle(self, bucketname, objname, decompress=None):
+  def directhandle(self, bucketname, objname, decompress=None, binary=None):
     if decompress is None:
       path = storage_name(self.path, objname)
     else:
       path = decompress_name(storage_name(self.path, objname))
     if os.path.isfile(path) and self.__getStateFromLog(bucketname, objname) == "COMPLETE":
-      return open(path)
+      if binary is not None:
+        return open(path, 'rb')
+      else:
+        return open(path)
     else:
       self.s3tocache(bucketname, objname, decompress=decompress)
-      return open(path)
+      if binary is not None:
+        return open(path, 'rb')
+      else:
+        return open(path)
   
   def __getStateFromLog(self, bucketname, objname):
     foundDownload = False
