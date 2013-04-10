@@ -1,45 +1,67 @@
-import numpy
-import scipy
-import Image
-from blockstore import BlockStore
 import config
+import json
+import math
+import numpy
+from cache import Cache
+from s3iterable import S3Iterable
 
-#TODO - try to remove
-def _strcmp(str1, str2):
-  l = min(len(str1), len(str2)) 
-  for i in range(0, l):
-    if (ord(str1[i]) > ord(str2[i])):
-      return 1
-    if (ord(str1[i]) < ord(str2[i])):
-      return -1
-  if (len(str1) > len(str2)):
-    return 1
-  if (len(str1) < len(str2)):
-    return -1
-  return 0   
-
-class TinyImage:
+# "meta-bucket": "ml-tinyimages-metadata"
+class TinyMetaData(S3Iterable):
   def __init__(self):
-    self.config = config.config()  
-    self.meta = BlockStore(self.config['tinyimages']['metapath'], 768)
-    self.data = BlockStore(self.config['tinyimages']['datapath'], 3072) 
+    super(TinyMetaData, self).__init__() 
+    self.config = config.config()
+    self.bucketname = self.config['tinyimages']['meta-bucket'] 
+    self.parser = json.loads
     self.img_count = 79302017
- 
-  #public functions
-  def byid(self, ids):
-    if isinstance(ids, int):
-      return numpy.fromstring(self.data.byid(ids), dtype='uint8')    
-    elif isinstance(ids, tuple):
-      o = []
-      for s in self.data.slice(ids[0], ids[1]):
-        o.append(numpy.fromstring(s, dtype='uint8'))
-      return o 
-    else:
-      o = []
-      for i in ids:
-        o.append(numpy.fromstring(self.data.byid(i), dtype='uint8'))  
-      return o
+        
+  def byid(self, index):
+    if index < 0 or index > self.img_count:
+      raise IndexError("Index must be between 0 and %d" % (self.img_count))
+    block = int(math.floor(index / 3400))
+    h = self.cache.directhandle(self.bucketname, str(block)+'.part',binary=True)
+    offset = (index % 3400) * 768
+    h.seek(offset)
+    o = h.read(768) 
+    h.close()
+    return numpy.fromstring(o, dtype='uint8')
 
+  def keyword(self, index):
+    d = self.byid(index)
+    return d[:80].tostring().strip()
+
+class TinyImages(S3Iterable):
+  def __init__(self):
+    super(TinyImages, self).__init__() 
+    self.config = config.config()
+    self.bucketname = self.config['tinyimages']['bucket'] 
+    self.parser = json.loads
+    self.img_count = 79302017    
+    self.metadata = TinyMetaData()
+  
+  def search(self, keyword, limit):
+    h = self.img_count
+    l = 0
+    while (h > l):
+      m = (h + l) / 2
+      k = self.metadata.keyword(m)
+      if keyword.lower() == k.lower():
+        o = []
+        c = 0
+        s = m
+        while self.metadata.keyword(s) == keyword:
+          s -= 1
+        s += 1 
+        while (self.metadata.keyword(s) == keyword) and (c < limit):
+          o.append(s)
+          c += 1
+          s += 1
+        return o 
+      elif keyword.lower() < k.lower():
+        h = m
+      else:
+        l = m
+    return [-1] 
+        
   def display(self, items):
     import cStringIO as StringIO
     import base64
@@ -52,42 +74,28 @@ class TinyImage:
       img.save(output, format="PNG")
       output_html += '<img src="data:image/png;base64,%s"/>' % base64.b64encode(output.getvalue())
     return HTML(output_html) 
-    
-  def search(self, keyword, limit):
-    (l, h) = self._logSearch(keyword)
-    found = False
-    found_count = 0
-    o = []
-    for i in range(l, h):
-      curr_word = self._keywordFromMeta(i)
-      if curr_word.lower() == keyword.lower():
-        found = True
-        o.append(i)
-        found_count += 1
-        if (found_count == limit):
-          break
-      else:
-        if (found):
-          break  
-    return o
 
-  def _keywordFromMeta(self, index):
-    for s in self.meta.slice(index, index):
-      return s[0:80].strip()
+  def byid(self, indexes):
+    if isinstance(indexes, int):
+      return self.__byid(indexes) 
+    elif isinstance(indexes, tuple):
+      o = []
+      for i in xrange(indexes[0], indexes[1]):
+        o.append(self.__byid(i))
+      return o
+    else:
+      o = []
+      for i in indexes:
+        o.append(self.__byid(i))
+      return o
 
-  def _logSearch(self, term):
-    low = 0
-    high = self.img_count
-    for i in range(0, 9):
-      curr_word = self._keywordFromMeta(int((low + high) / 2))
-      cmp = _strcmp(curr_word.lower(), term.lower())
-      if (cmp == 0):
-        return (low, high)
-      if (cmp == 1):
-        high = ((low + high) / 2)
-      if (cmp == -1):
-        low = ((low + high) / 2)
-    return (low, high)
-
-  def subsets(self):
-    return None
+  def __byid(self, index):
+    if index < 0 or index > self.img_count:
+      raise IndexError("Index must be between 0 and %d" % (self.img_count))
+    block = int(math.floor(index / 3400))
+    h = self.cache.directhandle(self.bucketname, str(block)+'.part',binary=True)
+    offset = (index % 3400) * 3072
+    h.seek(offset)
+    o = h.read(3072) 
+    h.close()
+    return numpy.fromstring(o, dtype='uint8')
