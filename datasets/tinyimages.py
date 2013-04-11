@@ -65,7 +65,9 @@ class TinyImages(S3Iterable):
   def display(self, items):
     import cStringIO as StringIO
     import base64
+    import scipy
     from IPython.core.display import HTML
+    from IPython.core.display import display
     output_html = ""
     for i in items:
       t = i.reshape(32,32,3, order="F").copy()
@@ -73,7 +75,7 @@ class TinyImages(S3Iterable):
       output = StringIO.StringIO()
       img.save(output, format="PNG")
       output_html += '<img src="data:image/png;base64,%s"/>' % base64.b64encode(output.getvalue())
-    return HTML(output_html) 
+    display(HTML(output_html)) 
 
   def byid(self, indexes):
     if isinstance(indexes, int):
