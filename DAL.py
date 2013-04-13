@@ -4,12 +4,14 @@ from datasets.sou import Sou
 from datasets.ngrams import Ngrams
 from datasets.crime import Crime
 from datasets.cache import Cache
+from datasets.rcv1 import rcv1
 
 class_table = {'tinyimages': TinyImages,
                'wishes': Wishes,
                'sou': Sou,
                'ngrams': Ngrams,
-               'crime': Crime}
+               'crime': Crime,
+               'rcv1': rcv1}
 
 def create(name):
   if name in class_table:
