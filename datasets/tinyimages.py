@@ -43,6 +43,8 @@ class TinyImages(S3Iterable):
     l = 0
     while (h > l):
       m = (h + l) / 2
+      if h - l == 1:
+        return None
       k = self.metadata.keyword(m)
       if keyword.lower() == k.lower():
         o = []
@@ -50,7 +52,7 @@ class TinyImages(S3Iterable):
         s = m
         while self.metadata.keyword(s) == keyword:
           s -= 1
-        s += 1 
+        s += 1
         while (self.metadata.keyword(s) == keyword) and (c < limit):
           o.append(s)
           c += 1
@@ -60,6 +62,8 @@ class TinyImages(S3Iterable):
         h = m
       else:
         l = m
+      if h == l: 
+        return None
     return [-1] 
         
   def display(self, items):

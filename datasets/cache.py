@@ -18,10 +18,9 @@ def decompress_name(name):
   pieces = name.split('.')
   return '.'.join(pieces[:(len(pieces) - 1)])
 
-def storage_name(path, name):
-  return path+'/' + '-'.join(name.split('/'))
+def storage_name(path, name, bucketname):
+  return path+'/' + bucketname+'-'.join(name.split('/'))
  
-
 class Cache:
   def __init__(self):
     self.config = config.config()
@@ -47,7 +46,7 @@ class Cache:
       b = conn.get_bucket(bucketname)
       k = Key(b)
       k.key = objname
-      path = storage_name(self.path, objname)
+      path = storage_name(self.path, objname, bucketname)
       k.get_contents_to_filename(path)
       if decompress is not None:
         self.decompress(decompress, path) 
@@ -87,9 +86,9 @@ class Cache:
     
   def directhandle(self, bucketname, objname, decompress=None, binary=None):
     if decompress is None:
-      path = storage_name(self.path, objname)
+      path = storage_name(self.path, objname, bucketname)
     else:
-      path = decompress_name(storage_name(self.path, objname))
+      path = decompress_name(storage_name(self.path, objname, bucketname))
     if os.path.isfile(path) and self.__getStateFromLog(bucketname, objname) == "COMPLETE":
       if binary is not None:
         return open(path, 'rb')
