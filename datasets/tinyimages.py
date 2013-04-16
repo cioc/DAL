@@ -10,7 +10,10 @@ class TinyMetaData(S3Iterable):
   def __init__(self):
     super(TinyMetaData, self).__init__() 
     self.config = config.config()
-    self.bucketname = self.config['tinyimages']['meta-bucket'] 
+    if config.local():
+      self.bucketname = self.config['tinyimages']['meta-bucket']+'-local' 
+    else:
+      self.bucketname = self.config['tinyimages']['meta-bucket']
     self.parser = json.loads
     self.img_count = 79302017
         
@@ -33,7 +36,10 @@ class TinyImages(S3Iterable):
   def __init__(self):
     super(TinyImages, self).__init__() 
     self.config = config.config()
-    self.bucketname = self.config['tinyimages']['bucket'] 
+    if config.local():
+      self.bucketname = self.config['tinyimages']['bucket']+'-local' 
+    else:
+      self.bucketname = self.config['tinyimages']['bucket']
     self.parser = json.loads
     self.img_count = 79302017    
     self.metadata = TinyMetaData()

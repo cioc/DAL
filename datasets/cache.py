@@ -59,10 +59,9 @@ class Cache:
     if cmd == 'unzip':
       z = zipfile.ZipFile(path)
       p = decompath.split('/')
-      z.extract(p[-1], path=decompath)
-      os.rename(self.path+'/'+p[-1]+'/'+p[-1], self.path+'/'+p[-1]+'-x') 
-      os.rmdir(self.path+'/'+p[-1])
-      os.rename(self.path+'/'+p[-1]+'-x', self.path+'/'+p[-1])   
+      z.extractall(path=self.path)
+      n = z.namelist()[0]
+      os.rename('/mnt/'+n, decompath)
     else:
       raise Exception("No Such Decompressor")
     return decompath

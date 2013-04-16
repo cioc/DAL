@@ -6,8 +6,10 @@ class Sou(S3Iterable):
   def __init__(self):
     super(Sou, self).__init__() 
     self.config = config.config()
-    self.bucketname = self.config['sou']['bucket']
-  
+    if config.local():
+      self.bucketname = self.config['sou']['bucket']
+    else:
+      self.bucketname = self.config['sou']['bucket']
   def metadata(self):
     dh = self.cache.directhandle(self.bucketname, 'soumeta.txt')
     o = []

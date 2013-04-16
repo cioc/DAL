@@ -15,6 +15,9 @@ class Ngrams(S3Iterable):
   def __init__(self):
     super(Ngrams, self).__init__() 
     self.config = config.config()
-    self.bucketname = self.config['ngrams']['bucket']
+    if config.local():
+      self.bucketname = self.config['ngrams']['bucket']+'-local'
+    else:
+      self.bucketname = self.config['ngrams']['bucket']
     self.parser = parsegram
     self.decompress = "unzip" 
