@@ -7,7 +7,7 @@ def get_config_file():
   username = getpass.getuser()
   if os.path.exists('~/.dalconfig'):
     return open('~/.dalconfig', 'r')
-  elif os.path.exists('/home/%s/dalconfig.json' % (username), 'r'):
+  elif os.path.exists('/home/%s/dalconfig.json' % (username)):
     return open('/home/%s/dalconfig.json' % (username), 'r')
   else:
     return None
@@ -21,7 +21,7 @@ def config():
   else:
     return None
 
-def local()
+def local():
   f = get_config_file()
   if f is not None:
     o = json.loads(f.read())
