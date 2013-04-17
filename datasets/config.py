@@ -5,8 +5,8 @@ import getpass
 
 def get_config_file():
   username = getpass.getuser()
-  if os.path.exists('~/.dalconfig'):
-    return open('~/.dalconfig', 'r')
+  if os.path.exists('/home/%s/.dalconfig' % (username)):
+    return open('/home/%s/.dalconfig' % (username), 'r')
   elif os.path.exists('/home/%s/dalconfig.json' % (username)):
     return open('/home/%s/dalconfig.json' % (username), 'r')
   else:
