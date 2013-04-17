@@ -7,7 +7,7 @@ class Sou(S3Iterable):
     super(Sou, self).__init__() 
     self.config = config.config()
     if config.local():
-      self.bucketname = self.config['sou']['bucket']
+      self.bucketname = self.config['sou']['bucket']+'-local'
     else:
       self.bucketname = self.config['sou']['bucket']
   def metadata(self):

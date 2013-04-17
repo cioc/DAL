@@ -5,26 +5,39 @@ import numpy
 from cache import Cache
 from s3iterable import S3Iterable
 
+def block_iterator(block_size):
+  def output(f):
+    while True:
+      data = f.read(block_size)
+      if data:
+        yield numpy.fromstring(data, dtype='uint8')
+      else:
+        break
+  return output
+  
 # "meta-bucket": "ml-tinyimages-metadata"
 class TinyMetaData(S3Iterable):
   def __init__(self):
     super(TinyMetaData, self).__init__() 
     self.config = config.config()
     if config.local():
-      self.bucketname = self.config['tinyimages']['meta-bucket']+'-local' 
+      self.bucketname = self.config['tinyimages']['meta-bucket']+'-local'
+      self.img_count = 6400 
     else:
       self.bucketname = self.config['tinyimages']['meta-bucket']
-    self.parser = json.loads
-    self.img_count = 79302017
+      self.img_count = 79302017
+    self.parser = None
+    self.block_size = 768
+    self.iterator = block_iterator(self.block_size)
         
   def byid(self, index):
     if index < 0 or index > self.img_count:
       raise IndexError("Index must be between 0 and %d" % (self.img_count))
     block = int(math.floor(index / 3400))
     h = self.cache.directhandle(self.bucketname, str(block)+'.part',binary=True)
-    offset = (index % 3400) * 768
+    offset = (index % 3400) * self.block_size
     h.seek(offset)
-    o = h.read(768) 
+    o = h.read(self.block_size) 
     h.close()
     return numpy.fromstring(o, dtype='uint8')
 
@@ -37,11 +50,14 @@ class TinyImages(S3Iterable):
     super(TinyImages, self).__init__() 
     self.config = config.config()
     if config.local():
-      self.bucketname = self.config['tinyimages']['bucket']+'-local' 
+      self.bucketname = self.config['tinyimages']['bucket']+'-local'
+      self.img_count = 6400 
     else:
       self.bucketname = self.config['tinyimages']['bucket']
-    self.parser = json.loads
-    self.img_count = 79302017    
+      self.img_count = 79302017    
+    self.parser = None
+    self.block_size = 3072
+    self.iterator = block_iterator(self.block_size)
     self.metadata = TinyMetaData()
   
   def search(self, keyword, limit):
@@ -106,8 +122,8 @@ class TinyImages(S3Iterable):
       raise IndexError("Index must be between 0 and %d" % (self.img_count))
     block = int(math.floor(index / 3400))
     h = self.cache.directhandle(self.bucketname, str(block)+'.part',binary=True)
-    offset = (index % 3400) * 3072
+    offset = (index % 3400) * self.block_size
     h.seek(offset)
-    o = h.read(3072) 
+    o = h.read(self.block_size) 
     h.close()
     return numpy.fromstring(o, dtype='uint8')
