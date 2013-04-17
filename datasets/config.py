@@ -19,7 +19,7 @@ def config():
     f.close()
     return o
   else:
-    return None
+    raise Exception('No DAL config file detected')
 
 def local():
   f = get_config_file()
@@ -30,4 +30,4 @@ def local():
       return o['system']['local']
     return False
   else:
-    return None
+    raise Exception('No DAL config file detected') 
