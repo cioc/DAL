@@ -1,20 +1,33 @@
 import json
+import os
+import os.path
+import getpass
 
-'''
-Loads configuration for all datasets
-'''
+def get_config_file():
+  username = getpass.getuser()
+  if os.path.exists('~/.dalconfig'):
+    return open('~/.dalconfig', 'r')
+  elif os.path.exists('/home/%s/dalconfig.json' % (username), 'r'):
+    return open('/home/%s/dalconfig.json' % (username), 'r')
+  else:
+    return None
 
 def config():
-  f = open('/home/charles_user/dalconfig.json', 'r')
-  o = json.loads(f.read())
-  f.close()
-  return o
+  f = get_config_file()
+  if f is not None:
+    o = json.loads(f.read())
+    f.close()
+    return o
+  else:
+    return None
 
-def local():
-  f = open('/home/charles_user/dalconfig.json', 'r')
-  o = json.loads(f.read())
-  f.close()
-  if 'system' in o and 'local' in o['system']:
-    return o['system']['local']
-  return False
-
+def local()
+  f = get_config_file()
+  if f is not None:
+    o = json.loads(f.read())
+    f.close()
+    if 'system' in o and 'local' in o['system']:
+      return o['system']['local']
+    return False
+  else:
+    return None
