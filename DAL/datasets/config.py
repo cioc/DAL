@@ -2,13 +2,14 @@ import json
 import os
 import os.path
 import getpass
+from os.path import expanduser
 
 def get_config_file():
-  username = getpass.getuser()
-  if os.path.exists('/home/%s/.dalconfig' % (username)):
-    return open('/home/%s/.dalconfig' % (username), 'r')
-  elif os.path.exists('/home/%s/dalconfig.json' % (username)):
-    return open('/home/%s/dalconfig.json' % (username), 'r')
+  home = expanduser("~")
+  if os.path.exists(home+'/.dalconfig' % (username)):
+    return open(home+'/.dalconfig' % (username), 'r')
+  elif os.path.exists(home+'/dalconfig.json' % (username)):
+    return open(home+'/dalconfig.json' % (username), 'r')
   else:
     return None
 
