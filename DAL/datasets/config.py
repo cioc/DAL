@@ -6,10 +6,10 @@ from os.path import expanduser
 
 def get_config_file():
   home = expanduser("~")
-  if os.path.exists(home+'/.dalconfig' % (username)):
-    return open(home+'/.dalconfig' % (username), 'r')
-  elif os.path.exists(home+'/dalconfig.json' % (username)):
-    return open(home+'/dalconfig.json' % (username), 'r')
+  if os.path.exists(home+'/.dalconfig'):
+    return open(home+'/.dalconfig', 'r')
+  elif os.path.exists(home+'/dalconfig.json'):
+    return open(home+'/dalconfig.json', 'r')
   else:
     return None
 
