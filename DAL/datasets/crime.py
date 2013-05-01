@@ -14,9 +14,11 @@ class Crime(S3Iterable):
     self.decompress = "unzip"
   
   def metadata(self):
-    df = self.cache.directhandle(self.bucketname, 'dfnk-7re6.json.meta.json', decompress=None)
-    ij = self.cache.directhandle(self.bucketname, 'ij.source.meta.meta.json', decompress=None)
+    #dfnk-7re6.json.meta.json => set0
+    #ij.source.meta.meta.json => set1
+    df = self.cache.directhandle(self.bucketname, 'set0.meta.json', decompress=None)
+    ij = self.cache.directhandle(self.bucketname, 'set1.meta.json', decompress=None)
     o = {}
-    o['dfnk-7re6.json.meta.json'] = json.loads(df.read())
-    o['ij.source.meta.meta.json'] = json.loads(ij.read())
+    o['set0.meta.json'] = json.loads(df.read())
+    o['set1.meta.json'] = json.loads(ij.read())
     return o
