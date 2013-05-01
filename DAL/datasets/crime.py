@@ -12,6 +12,7 @@ class Crime(S3Iterable):
     else:
       self.bucketname = self.config['crime']['bucket']
     self.decompress = "unzip"
+    self.parser = json.loads
   
   def metadata(self):
     #dfnk-7re6.json.meta.json => set0
