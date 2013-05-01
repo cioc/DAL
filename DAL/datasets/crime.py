@@ -13,6 +13,10 @@ class Crime(S3Iterable):
       self.bucketname = self.config['crime']['bucket']
     self.decompress = "unzip"
   
-  def metadata(self, subset):
-    dh = self.cache.directhandle(self.bucketname, subset, decompress=None)
-    return json.loads(dh.read()) 
+  def metadata(self):
+    df = self.cache.directhandle(self.bucketname, 'dfnk-7re6.json.meta.json', decompress=None)
+    ij = self.cache.directhandle(self.bucketname, 'ij.source.meta.meta.json', decompress=None)
+    o = {}
+    o['dfnk-7re6.json.meta.json'] = json.loads(df.read())
+    o['ij.source.meta.meta.json'] = json.loads(ij.read())
+    return o
