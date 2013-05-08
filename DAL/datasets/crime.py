@@ -1,5 +1,6 @@
 import config
 import json
+import pickle
 from cache import Cache
 from s3iterable import S3Iterable
 
@@ -23,3 +24,17 @@ class Crime(S3Iterable):
     o['set0.meta.json'] = json.loads(df.read())
     o['set1.meta.json'] = json.loads(ij.read())
     return o
+
+  def get_crime_list(self):
+    f = self.cache.directhandle(self.bucketname, 'crime_list.zip', decompress="unzip")
+    return pickle.load(f)
+
+  def get_crime_counts(self):
+    f = self.cache.directhandle(self.bucketname, 'crime_counts.zip', decompress="unzip")
+    return pickle.load(f)
+ 
+  def get_region_list(self):
+    f = self.cache.directhandle(self.bucketname, 'region_list.zip', decompress="unzip")
+    return pickle.load(f)
+ 
+    
