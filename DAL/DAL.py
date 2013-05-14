@@ -5,6 +5,7 @@ from datasets.ngrams import Ngrams
 from datasets.crime import Crime
 from datasets.cache import Cache
 from datasets.rcv1 import rcv1
+from datasets.lightcurves import LightCurves
 from datasets.wisheslabelled import WishesLabelled
 
 class_table = {'tinyimages': TinyImages,
@@ -13,7 +14,8 @@ class_table = {'tinyimages': TinyImages,
                'ngrams': Ngrams,
                'crime': Crime,
                'rcv1': rcv1,
-               'wishes-labelled': WishesLabelled}
+               'wishes-labelled': WishesLabelled,
+               'lightcurves': LightCurves}
 
 def create(name):
   if name in class_table:
