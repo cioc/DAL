@@ -7,7 +7,7 @@ import fcntl
 import time
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-import zipfile
+import czipfile as zipfile
 from collections import defaultdict
 
 #TODO - size handling
@@ -82,7 +82,7 @@ class Cache:
             pieces = k.split('|')
             f.write(pieces[0] + ' ' + pieces[1] + ' ' + 'downloading...\n')
             f.write(pieces[0] + ' ' + pieces[1] + ' ' + 'COMPLETE\n')
-    
+  
   def directhandle(self, bucketname, objname, decompress=None, binary=None):
     if decompress is None:
       path = storage_name(self.path, objname, bucketname)
