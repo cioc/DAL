@@ -17,9 +17,12 @@ class_table = {'tinyimages': TinyImages,
                'wishes-labelled': WishesLabelled,
                'lightcurves': LightCurves}
 
-def create(name):
+def create(name,original=None):
   if name in class_table:
-    return class_table[name]()
+    if original is not None:
+      return class_table[name](original=original)
+    else:
+      return class_table[name]()
   else:
     raise Exception("No Such Dataset with name: %s" % (name))
 

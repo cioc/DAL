@@ -5,13 +5,15 @@ from cache import Cache
 from s3iterable import S3Iterable
 
 class LightCurves(S3Iterable):
-  def __init__(self):
+  def __init__(self,original=None):
     super(LightCurves, self).__init__() 
     self.config = config.config()
     if config.local():
       self.bucketname = self.config['lightcurves']['bucket']+'-local'
     else:
       self.bucketname = self.config['lightcurves']['bucket']
+    if original is not None:
+      self.bucketname = 'ml-lightcurves-q14' 
     self.decompress = "unzip"
     self.parser = None
 
