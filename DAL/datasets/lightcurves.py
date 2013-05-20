@@ -27,6 +27,9 @@ class LightCurves(S3Iterable):
         accum = ""  
       else:
         accum += i
+    if accum != '':
+      yield json.loads(accum)
+      accum = ""
   
   def filter(self, subset, f):
     for i in self.iter(subset):
