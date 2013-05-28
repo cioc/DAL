@@ -1,3 +1,5 @@
+import urllib2
+import urllib
 import config
 import json
 import pickle
@@ -35,3 +37,12 @@ class LightCurves(S3Iterable):
     for i in self.iter(subset):
       if f(i):
         yield i
+
+  def score(self, ranking):
+    o = {}
+    o['key'] = self.config['cache']['AWS_ACCESS_KEY']
+    o['ranking'] = ranking
+    data = json.dumps(o)
+    req = urllib2.urlopen('http://staging.lsda.cs.uchicago.edu:8000', data)
+    o = json.loads(req.read())
+    return o
